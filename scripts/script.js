@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   /* LOGICA DA APLICAÇÃO*/
-  class Calculator {
+  class calc {
     constructor(previousOperationText, currentOperationText) {
       this.previousOperationText = previousOperationText;
       this.currentOperationText = currentOperationText;
@@ -49,10 +49,21 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 // Processos de operação na calculadora
   processOperation(operation){
+// verifique se a corrent está vazia
+
+if(this.currentOperationText.innerText === "" && operation !== "C"){
+  if( this.previousOperationText.innerText === ""){
+// mudança de operação
+if(this.previousOperationText.innerText !== ""){
+  this.changeOperation(operation);
+}    
+  }
+  return;
+}
 
 //obter valor atual e anterior
  let operationValue;
- const previous = +this.previousOperationText.innerText;
+ const previous = +this.previousOperationText.innerText.split(" ")[0];
  const current = +this.currentOperationText.innerText;
 
 // switch() verifica a operação
@@ -60,6 +71,27 @@ document.addEventListener("DOMContentLoaded", function () {
   case "+":
     operationValue = previous + current;
     this.updateScreen(operationValue, operation, current, previous);
+    break;
+  case "-":
+    operationValue = previous + current;
+    this.updateScreen(operationValue, operation, current, previous);
+    break;
+  case "/":
+    operationValue = previous + current;
+    this.updateScreen(operationValue, operation, current, previous);
+    break;
+  case "*":
+    operationValue = previous + current;
+    this.updateScreen(operationValue, operation, current, previous);
+    break;
+  case "DEL":
+   this.processDelOperator();
+  case "CE":
+   this.processClearCurrentOperation();
+  case "C":
+   this.processClearAllOperation(); 
+  case "=":
+   this.processEqualsOperation();      
     break;
     default:
       return;
@@ -83,7 +115,39 @@ updateScreen(operationValue = null, operation = null, previous = null){
     this.currentOperationText.innerText = "";
     }
   }
-}
+
+// mudando a operação matematica
+changeOperation(operation){
+   const mathOperations = ["+", "-", "*","/"]
+    if(!mathOperations.includes(operation)){
+      return;
+
+     }
+
+     this.previousOperationText.innerText.innerText = this.previousOperationText.innerText.slice(0,-1) + operation;
+    }
+
+//  deletando o ultimo digito   
+    processDelOperator(){
+      this.currentOperationText.innerText = currentOperationText.innerText.slice(0, -1)
+    }
+// limpando a operação atual    
+    processClearCurrentOperation(){
+      this.currentOperationText.innerText = "";
+    }
+// limpando todas as operações
+    processClearAllOperation(){
+      this.currentOperationText.innerText = "";
+      this.previuosOperationText.innerText = "";
+    }
+// operação e processo
+  processEqualsOperation(){
+
+    const operation = previousOperationText.innerText.split(" ")[1]
+    this.processOperation(operation);
+
+   }    
+  }
 });
 
-const calc = new Calculator(previousOperationText, currentOperationText);
+const calc = new calc(previousOperationText, currentOperationText);
