@@ -11,30 +11,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const buttons = document.querySelectorAll("#buttons-container button");
   console.log(buttons);
 
-  /* EVENTOS DOS BOTÕES */
-  buttons.forEach((btn) => {
-
-    //receber os valores dos botões
-    btn.addEventListener("click", (e) => {
-      const value = e.target.innerText;
-      console.log(value);
-
-// numeros 
-      if (+value >= 0 || value === "."){
-        calc.addDigit(value);
-      }else{
-        calc.processOperation(value);
-      }
-
-    });
-  });
 
   /* LOGICA DA APLICAÇÃO*/
-  class calc {
+  class Calc {
     constructor(previousOperationText, currentOperationText) {
       this.previousOperationText = previousOperationText;
       this.currentOperationText = currentOperationText;
-
       this.currentOperation = "";
     }
   // mostrando os digitos no visor
@@ -47,17 +29,15 @@ document.addEventListener("DOMContentLoaded", function () {
    this.currentOperation = digit
    this.updateScreen()
   };
-// Processos de operação na calculadora
-  processOperation(operation){
-// verifique se a corrent está vazia
 
-if(this.currentOperationText.innerText === "" && operation !== "C"){
-  if( this.previousOperationText.innerText === ""){
-// mudança de operação
-if(this.previousOperationText.innerText !== ""){
-  this.changeOperation(operation);
+// Processos de operação na calculadora
+processOperation(operation){
+  // verifique o valor atual está vazia
+  if(this.currentOperationText.innerText === "" && operation !== "C"){
+    // mudança de operação
+    if(this.previousOperationText.innerText !== ""){
+    this.changeOperation(operation);
 }    
-  }
   return;
 }
 
@@ -66,42 +46,47 @@ if(this.previousOperationText.innerText !== ""){
  const previous = +this.previousOperationText.innerText.split(" ")[0];
  const current = +this.currentOperationText.innerText;
 
-// switch() verifica a operação
+  // switch() verifica a operação
  switch(operation){
   case "+":
     operationValue = previous + current;
     this.updateScreen(operationValue, operation, current, previous);
     break;
   case "-":
-    operationValue = previous + current;
+    operationValue = previous - current;
     this.updateScreen(operationValue, operation, current, previous);
     break;
   case "/":
-    operationValue = previous + current;
+    operationValue = previous / current;
     this.updateScreen(operationValue, operation, current, previous);
     break;
   case "*":
-    operationValue = previous + current;
+    operationValue = previous * current;
     this.updateScreen(operationValue, operation, current, previous);
     break;
   case "DEL":
    this.processDelOperator();
+   break;
   case "CE":
    this.processClearCurrentOperation();
+   break;
   case "C":
    this.processClearAllOperation(); 
+   break;
   case "=":
-   this.processEqualsOperation();      
-    break;
+   this.processEqualOperator();
+   break;      
     default:
       return;
  }
-
 }
 // mudando valores na tela da caulculadora 
-updateScreen(operationValue = null, operation = null, previous = null){ 
-
-  console.log(operationValue, operation, current, previous);
+updateScreen(
+  operationValue = null, 
+  operation = null,
+  current = null, 
+  previous = null
+  ){
    
   if(operationValue === null){
       this.currentOperationText.innerText += this.currentOperation;
@@ -117,37 +102,57 @@ updateScreen(operationValue = null, operation = null, previous = null){
   }
 
 // mudando a operação matematica
-changeOperation(operation){
-   const mathOperations = ["+", "-", "*","/"]
+changeOperation(operation) {
+   const mathOperations = ["+", "-", "*", "/"]
     if(!mathOperations.includes(operation)){
       return;
-
      }
 
-     this.previousOperationText.innerText.innerText = this.previousOperationText.innerText.slice(0,-1) + operation;
+     this.previousOperationText.innerText.innerText = 
+     this.previousOperationText.innerText.slice(0,-1) + operation;
     }
 
 //  deletando o ultimo digito   
-    processDelOperator(){
-      this.currentOperationText.innerText = currentOperationText.innerText.slice(0, -1)
+    processDelOperator() {
+      this.currentOperationText.innerText =
+      this.currentOperationText.innerText.slice(0, -1);
     }
+
 // limpando a operação atual    
     processClearCurrentOperation(){
       this.currentOperationText.innerText = "";
     }
+
 // limpando todas as operações
     processClearAllOperation(){
       this.currentOperationText.innerText = "";
-      this.previuosOperationText.innerText = "";
+    this.previousOperationText.innerText = "";
     }
+
 // operação e processo
-  processEqualsOperation(){
+processEqualOperator() {
+  let operation = this.previousOperationText.innerText.split(" ")[1];
 
-    const operation = previousOperationText.innerText.split(" ")[1]
-    this.processOperation(operation);
-
-   }    
+  this.processOperation(operation);
   }
-});
+} 
 
-const calc = new calc(previousOperationText, currentOperationText);
+const calc = new Calc(previousOperationText, currentOperationText);
+
+/* EVENTOS DOS BOTÕES */
+buttons.forEach((btn) => {
+
+  //receber os valores dos botões
+  btn.addEventListener("click", (e) => {
+    const value = e.target.innerText;
+
+    if (+value >= 0 || value === ".") {
+      calc.addDigit(value);
+    }else{
+      calc.processOperation(value);
+    }
+  });
+
+}); 
+
+});
